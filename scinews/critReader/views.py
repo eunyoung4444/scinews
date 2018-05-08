@@ -181,7 +181,7 @@ def signin(request):
             login(request, user)
             return redirect('tutorial')
         else:
-            return HttpResponse('로그인 실패. 다시 시도 해보세요.')
+            return HttpResponse('Log-In Failed. Try Again.')
     else:
         form = LoginForm()
         return render(request, 'critreader/login.html', {'form': form})
