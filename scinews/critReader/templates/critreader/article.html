@@ -35,70 +35,26 @@
            </div>
            <div class="col-4" class="col-container" id="sidebar-container">
              <div id="floating-div">
-              <div id="QtoA" style="display:none;"> 
-                Questions to be answered
-                <div id="selected_questions" class="sections">
-              </div>  <!-- End of selected_questions-->
-                </div>
-             <div id="QwithA" style="display:none;"> 
-                        Questions you've answered
-                        <div id="answeredquestions" class="sections">
-                        </div>  <!-- End of selected_questions-->
-                        </div>
-        </div>
+              <div id="Questions" class="sections" style="display:none;"> 
+                <h6>Questions that you've made <small>(total <small id="qnumtotal">0</small>)</small> </h6>
+                <div id="raised_questions" class="sections">
+                        {% for startingQ in titleqs %}
+                        <div class="card" dataref="" style="width:100%;">
+                                <div class="row qrow">
+                                    <div class="qlist col-11">{{ startingQ.question_text }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                </div>  
+              </div>
+              <div id="finish" class="sections">
+                <button class="btn" id="finishreadingbutton" onclick="finishReading()" style="width:100%;height:30px;padding:3px;" disabled="true" dataref="{{user.id}}">Finish Reading</button>
+              </div> 
+             </div>
      </div> <!-- End of col-container-->
      </div>
     <div class="row" id="footer"> Critical reading </div>
 </div>
 
-<!-- Popup  -->
-<div id="boxes">
-            <div style="display: none;" id="dialog" class="window">
-            <div style="margin:auto;width:75%;">
-              <h4 id="popuptitle" style="text-align:left;">"{{article.article_title}}"</h4> 
-            </div>
-              <hr>
-            <div class="row" id="Qgen">
-                <div class="col-xs-6" class="col-container" id="getQs">
-                        <p> Make your set of questions </p>
-                        <div class="row constQTypes"> 
-                                <div id="choosefromList">
-                                        <p style="font-size:10px">Doubleclick to add to your list</p>
-                                        <div>
-                                        <ul class="list-group" id="existingQs">
-                                                        {% for question in orderedlist %}
-                                                        <li class="list-group-item justify-content-between existQs"><span class="questions">{{question.question_text}}</span>
-                                                                <span class="questionby"> by {{question.question_madeby}}</span>
-                                                                <span class="badge"> {{question.question_popularity}}</span>
-                                                                <hide class="qpk" style="display:none">{{ question.pk }}</hide> 
-                                                        </li>
-                                                        {% endfor %}
-                                        </ul>
-                                </div>
-                                </div>
-                        </div>
-                        <div class="row constQTypes">
-                         <div id="makeyourown">
-                                        <p style="font-size:10px">Type in your Questions</p>
-                                        <div id="typeinquestion" onSubmit="return false;">
-                                                        <form><input id="typeQ"></form>
-                                        </div>
-                      </div>
-                </div>
-                </div>
-                <div class="col-xs-6" class="col-container" id="seeQs">
-                        <p> <span id="userquestion">Questions that you want to answer:</p>
-                        <ul class="list-group" id="myquestions">
-                        </ul>
-                </div>
-            </div> 
 
-
-            <!-- Read Button -->
-            <div id="popupfoot"> 
-                      <button type="button" class="btn btn-success" style="float: right;" id="letsread">Let's Read!</button>                      
-                    </div>
-            </div>
-            <div style="width: 1478px; font-size: 32pt; color:white; height: 602px; display: none; opacity: 0.8;" id="mask"></div>
-    </div>
 {% endblock %}

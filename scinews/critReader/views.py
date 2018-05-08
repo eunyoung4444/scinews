@@ -27,28 +27,20 @@ def article(request,article_no):
         raise Http404("Research does not exist")
     thisArticle=Article.objects.get(article_no=article_no)
     thisResearch=thisArticle.article_research
-    relatedArticles=Article.objects.filter(article_research=thisResearch)
-    allqs=Question.objects.none()
-    for anArticle in relatedArticles:
-        q=Question.objects.filter(question_article=anArticle)
-        allqs=allqs|q
-    orderedq=reversed(sorted(allqs, key=operator.attrgetter('question_popularity')))
-    orderedlist=list(orderedq)
-    questions=Question.objects.none()
-    for anArticle in relatedArticles:
-        quests=Question.objects.filter(question_article=anArticle,question_madeat="qcol")
-        questions=questions | quests
-    quizs=Question.objects.none()
-    for anArticle in relatedArticles:
-        qs=Question.objects.filter(question_article=anArticle,question_madeat="quizcol")
-        quizs=quizs | qs
-    reftexts=[RefText.objects.filter(reftext_question=aquiz) for aquiz in quizs]
+    allqs=Question.objects.filter(question_research=thisResearch)
+    titleqs=Question.objects.filter(question_research=thisResearch, question_abstract=1)
+#    orderedq=reversed(sorted(allqs, key=operator.attrgetter('question_popularity')))
+#    orderedlist=list(orderedq)
+    questionlinkhere=Questionlink.objects.filter(link_article=thisArticle)
+    quizlinkhere=Quizlink.objects.filter(link_article=thisArticle)
+    quizlinkthere=Quizlink.objects.filter(link_article!=thisArticle, link_research=thisResearch)
     context={
     'article':thisArticle,
-    'quizs':quizs,
-    'reftexts':reftexts,
-    'questions':questions,
-    'orderedlist':orderedlist,
+    'allqs':allqs,
+    'titleqs':titleqs,
+    'questionhere':questionlinkhere,
+    'quizlinkhere':quizlinkhere,
+    'quizlinkthere':quizlinkthere,
     } 
     return render(request, 'critreader/article.html', context)
 
