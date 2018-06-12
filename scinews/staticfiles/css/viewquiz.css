@@ -188,7 +188,14 @@
   background-color: #f8f8f8 !important;
   border-radius: 5px !important;
 }
+#next{
+  padding:0px}
 
+#Quiz{
+  border: 2px solid #ffc107
+}
+#help{
+  padding:0px;}
 
 #mask {
   position:absolute;
@@ -343,10 +350,6 @@
   margin-top:10px;
 }
 
-#Questions{
-  border: 2px solid #318d31
-}
-
 #getQs{
   padding-right:0px !important
 }
@@ -434,10 +437,6 @@
   -webkit-margin-end:0px;
 }
 
-.selectable{
-  border: 1px #D5D8DC dashed;
-}
-
 .prevselected{
   background-color: #F9E79F !important;
 }
@@ -448,32 +447,41 @@
 }
 
 /* Question lists on the right side bar */
+/* Question lists on the right side bar */
 .qlist{
-  padding-top:6px;
+  padding-top:3px;
   padding-bottom: 3px;
+  font-size:14px;
 }
 
 
-.checkboxholder{
+
+.deleteholder{
   padding-left:0px;
   padding-right:0px;
+  display:flex;
+  align-items:center;
 }
+
 .qrow{
-  margin:0px;
+margin:0px;
 }
 
 .card{
-  margin-bottom: 5px;
+margin-bottom: 5px;
 }
 
-.prompts{
-  padding:0px !important;
+.deletebutton{
+  padding-left:0px;
+  padding-right:0px;
 }
 
-.promptholders{
-  padding:0px !important;
-}
-.btnsholder{
-  padding:0px
+#submit_quiz{
+  display:flex;
+  justify-content: space-between;
 }
 
+#popoverclose{
+  float:right;
+  padding:0px;
+}

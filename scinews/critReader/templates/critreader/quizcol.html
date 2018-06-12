@@ -25,8 +25,8 @@
                           {{article.article_body}}</div>
                       <div class="col-1" class="col-container">
                               <div id="addbuttons" style="position:absolute">
-                          <!--      <button type="button"  class="btn btn-success btn-circle addbuttons" id="addQbutton"><i class="fa fa-question"></i></button> -->
-                                <button type="button"  class="btn btn-warning btn-circle addbuttons" id="addEbutton"><i class="fa fa-star" style="color:white"></i></button>
+                                <button type="button"  class="btn btn-success btn-circle addbuttons" id="addQbutton"><i class="fa fa-question"></i></button>
+                                <button type="button"  class="btn btn-warning btn-circle addbuttons" id="addEbutton" style="display:none"><i class="fa fa-star" style="color:white"></i></button>
                         </div>
                         </div>
                 </div>
@@ -35,7 +35,7 @@
            </div>
            <div class="col-4" class="col-container" id="sidebar-container">
              <div id="floating-div">
-                <div id="help" class="sections">
+                <div id="help" class="sections" style="display:none">
                         <button id="helpbutton" data-toggle="collapse" data-target="#helpmessage" class='btn' style="width:100%;height:30px;background-color:rgb(253, 172, 22);color:white;padding:0px"> Click to see help </button>
                         <div id="helpmessage" class="collapse" style="padding:10px">
                             <p>Suppose you are a teacher and make a quiz to help your students to grasp important information.</p>
@@ -43,16 +43,18 @@
                             <p>Click <span class="btn btn-warning btn-circle" style="width:15px;height:15px;padding:0px;" disabled><i class="fa fa-star" style="color:white;font-size:11px;vertical-align:top;"></i></span>, select sentence(s), and type in quiz question that can be answered by the selected sentences.</p> <p> Your list of questions will be shown in the <span style="color:#ffc107">yellow</span> box.</p>
                         </div>
                     </div>
-                <div id="Quiz" class="sections"> 
-                
-                <h6>Quiz that you've made <small>(total <small id="qnumtotal">0</small>)</small> <a id="showless" style="display:none" onclick="ShowLess();" href="#">show less</a></h6>
-                <div id="generated_quiz" class="sections"></div> 
-                <div id="submit_quiz" >
-                        <small style="color:grey">* You need 5+ quiz questions to proceed.</small>
-                </div>
+                <div id="Question" class="sections"> 
+                <h6>Questions that you've made <small>(total <small id="qnumtotal">0</small>)</small> <small><a id="showless" style="display:none" onclick="ShowLess();" href="#">show less</a><small></h6>
+                <div><small id="lastlyadded" style="display:none">Lastly added:</small></div>
+                    <div id="questions_generated" class="sections"></div> 
+            </div>
+            <div id="Quiz" class="sections" style="display:none"> 
+                <h6>Questions that you've made <small>(total <small id="qnumtotal_q">0</small>)</small> <small><a id="showless_q" style="display:none" onclick="ShowLess_q();" href="#">show less</a><small></h6>
+                <div><small id="lastlyadded_q" style="display:none">Lastly added:</small></div>
+                    <div id="quiz_generated" class="sections"></div> 
             </div>
             <div id="next" class="sections">
-            <button class="btn" id="submitQuizbutton" onclick="submitQuiz()" style="width:100%;height:30px;padding:3px;" disabled="true" dataref="{{user.id}}">Next</button>
+            <button class="btn" id="submitQuizbutton" onclick="submitQs" style="width:100%;height:30px;padding:3px;" dataref="{{user.id}}">Next</button>
          </div>           
                 
         </div>

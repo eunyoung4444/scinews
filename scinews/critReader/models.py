@@ -27,9 +27,8 @@ class Question(models.Model):
     question_firstmadeat=models.ForeignKey(Article, on_delete=models.CASCADE)
     question_text=models.CharField(max_length=200)
     question_firstmadeby=models.ForeignKey(User, on_delete=models.CASCADE)
-    question_firstmadeas=models.CharField(max_length=20)
-    question_popularity=models.PositiveIntegerField(default=1)
-    question_abstract=models.IntegerField(default=0)
+    question_firstmadeas=models.CharField(max_length=20) # either quiz or question
+    question_abstract=models.BooleanField(default=False)
     question_pubdate = models.DateTimeField('date published')
     def generate(self):
         self.save()
@@ -60,7 +59,19 @@ class Quizlink(models.Model):
         self.save()
     def __str__(self):
         return self.link_reftexts
-    
+
+class AQrel(models.Model):
+    rel_article=models.ForeignKey(Article)
+    rel_question=models.ForeignKey(Question)
+    rel_rangestart=models.IntegerField(default=0)
+    rel_rangeend=models.IntegerField(default=1)
+    showat=models.IntegerField(default=1)
+    def __str__(self):
+        return self.rel_question.question_text
+    def generate(self):
+        self.save()
+        
+
 class SurveyEmbed(models.Model):
     survey_no=models.IntegerField(default=0)
     survey_name=models.CharField(max_length=100)

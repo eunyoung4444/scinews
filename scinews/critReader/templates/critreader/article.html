@@ -25,7 +25,7 @@
                           {{article.article_body}}</div>
                       <div class="col-1" class="col-container">
                               <div id="addbuttons" style="position:absolute">
-                          <!--      <button type="button"  class="btn btn-success btn-circle addbuttons" id="addQbutton"><i class="fa fa-question"></i></button> -->
+                                <button type="button"  class="btn btn-success btn-circle addbuttons" id="addQbutton"><i class="fa fa-question" style="color:white"></i></button> 
                                 <button type="button"  class="btn btn-warning btn-circle addbuttons" id="addEbutton"><i class="fa fa-star" style="color:white"></i></button>
                         </div>
                         </div>
@@ -35,26 +35,25 @@
            </div>
            <div class="col-4" class="col-container" id="sidebar-container">
              <div id="floating-div">
-              <div id="Questions" class="sections" style="display:none;"> 
+              <div id="Questions" class="sections" style="display:none;">
                 <h6>Questions that you've made <small>(total <small id="qnumtotal">0</small>)</small> </h6>
                 <div id="raised_questions" class="sections">
-                        {% for startingQ in titleqs %}
-                        <div class="card" dataref="" style="width:100%;">
-                                <div class="row qrow">
-                                    <div class="qlist col-11">{{ startingQ.question_text }}</div>
-                                </div>
-                            </div>
-                        {% endfor %}
                 </div>  
               </div>
-              <div id="finish" class="sections">
-                <button class="btn" id="finishreadingbutton" onclick="finishReading()" style="width:100%;height:30px;padding:3px;" disabled="true" dataref="{{user.id}}">Finish Reading</button>
-              </div> 
              </div>
+             <div class="sections prompts" id="sent5prompt" style="display:none">
+                <div class="sections promptholders">
+                  <div class="row qrow">
+                    <div class="qlist col-9">prompted question</div>
+                    <div class="col-3 btnsholder">
+                      <button class="btn takebutton" style="float:left" onclick="takeQ(this)"><i class="fa fa-plus-circle"></i></button>
+                      <button class="btn discardbutton" style="float:left" onclick="discard(this)"><i class="fa fa-times-circle"></i></button></div>
+                  </div>
+                </div>
+              </div>              
      </div> <!-- End of col-container-->
      </div>
     <div class="row" id="footer"> Critical reading </div>
 </div>
-
 
 {% endblock %}

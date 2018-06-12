@@ -194,6 +194,10 @@
 #Quiz{
   border: 2px solid #ffc107
 }
+
+#Question{
+  border: 2px solid #009e08
+}
 #help{
   padding:0px;}
 
@@ -488,4 +492,8 @@ margin-bottom: 5px;
 #popoverclose{
   float:right;
   padding:0px;
+}
+
+#lastlyadded{
+  color: #009e08;
 }

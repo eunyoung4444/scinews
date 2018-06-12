@@ -343,6 +343,10 @@
   margin-top:10px;
 }
 
+#Questions{
+  border: 2px solid #318d31
+}
+
 #getQs{
   padding-right:0px !important
 }

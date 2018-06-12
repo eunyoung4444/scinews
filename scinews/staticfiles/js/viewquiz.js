@@ -32,21 +32,38 @@
             body.appendChild(asent);
         }}
     }
+    var maxcount=maxcountnumber();
+    var refc=refcounter();
+    var refcount=refc[0];
+    var qnumholders=refc[1];
+    console.log(qnumholders)
+    var numbins=5;
+    var colorpal=['','','#f0f8fe','#dff1fe','#cfe9fd'];
+    //'#dbeffe','#b4defc','#87cefa'
+    //'#e4f2fe','#c8e7fd','#a9dafb','#87cefa'
+    //'#ffffff','#e3f3fa','#c7e6f5','#a9daf0','#87ceeb'
+    //'#ffffff','#ecf6fe','#dbeffe','#c8e7fd','#b4defc','#9ed6fb','#87cefa'
+    //https://gka.github.io/palettes/#colors=white,lightskyblue|steps=4|bez=1|coL=1
+    var threshs=thresholds(refcount, numbins);
+
     // Give id to each sentence 
     sents=document.getElementById("text").getElementsByTagName("sent");
     for (var i=0;i<sents.length;i++){
         thissent=sents[i];
         thissent.setAttribute("id","sent"+i.toString());
-        thissent.setAttribute('dataref',0);
+        corlor=getcolor(colorpal,threshs,refcount[i]);
+        if(color!=''){
+            thissent.classList.add('selectable');
+        }
+        thissent.style.backgroundColor=color;
         $("#sent"+i.toString()).on({
             mouseenter: function(){
-            if(thissent.classList.contains('selectable')){
-//                this.setAttribute('style', 'backgroundColor:#FCF3CF !important');
-                this.style.backgroundColor="#FCF3CF";
+            if(this.classList.contains('selectable')){
+                this.style.border="1px dashed rgb(151, 167, 189)";
             }},
             mouseleave: function(){
-                if(thissent.classList.contains('selectable')){
-                    this.style.backgroundColor="transparent";
+                if(this.classList.contains('selectable')){
+                    this.style.border="";
                  }
             }
         });
@@ -158,6 +175,63 @@
         
 }); 
 
+function maxcountnumber(){
+    refs=refcounter();
+    ref=refs[0];
+    maxcount=Math.max.apply(Math, ref);
+    return maxcount
+}
+
+function refcounter(){
+    maxcount=0;
+    quizs=document.getElementById("generated_quiz").getElementsByClassName("card"); // Number of questions 
+    var sentences=document.getElementsByTagName("sent");
+    sentnum=sentences.length;
+    ref=Array.apply(null, Array(sentnum)).map(Number.prototype.valueOf,0);
+    qnumholders=[]
+    for(i=0;i<sentnum;i++){
+        qnumholders.push([]);
+    }
+    refs=[]
+    for (i=0;i<quizs.length;i++){
+        reftexts=quizs[i].getAttribute("dataref").split(",");
+        for(k=0;k<reftexts.length;k++){
+            qrefpair=[i, reftexts[k]];
+            refs.push(qrefpair);}
+    }
+    for (j=0;j<refs.length;j++){
+        aqrefpair=refs[j];
+        qnum=aqrefpair[0];
+        aref=aqrefpair[1];
+        sentno=Number(aref.substring(4));
+        ref[sentno]=ref[sentno]+1;
+        qnumholders[sentno]=qnumholders[sentno].concat(qnum);
+    }
+    return [ref, qnumholders]
+}
+
+function thresholds(refcountinput, numbins){
+    refcount=refcountinput.concat();
+    refcount.sort();
+    var len=refcount.length;
+    thresholds=Array.apply(null, Array(numbins-1)).map(Number.prototype.valueOf,0);
+    for(i=0;i<thresholds.length;i++){
+        thresholds[i]=refcount[Math.floor(len*(i+1)/numbins)-1];
+    }
+    return thresholds
+}
+
+function getcolor(colorpal,threshs,refcount){
+    nbins=colorpal.length;
+    color=colorpal[0];
+    i=0;
+    while((refcount>threshs[i])&&(i<4)){
+        color=colorpal[i+1]
+        i++;
+    }
+    return color
+}
+
 function popoverclose(){
     $('#addEbutton').popover('hide');
     var sentences=document.getElementsByTagName("sent");
@@ -171,31 +245,6 @@ function popoverclose(){
     document.getElementById("addbuttons").classList.remove('fixedbutton');    
 
 }
-
-// End of document ready clause 
-// Move addbuttons along with mouse
-$(document).on('mousemove', function(e){
-    e.preventDefault();
-   mousey=e.pageY
-     texttop=document.getElementById('text').offsetTop;
-    textheight=document.getElementById('text').offsetHeight;
-    addbuttons=document.getElementById("addbuttons");
-    if(addbuttons.classList.contains('fixedbutton')){}
-    else{
-    buttontop=0;
-    topmargin=document.getElementById("top-margin").offsetHeight;
-    realtexttop=topmargin+texttop;
-    if(mousey<realtexttop){
-        buttontop=0;
-    }else{
-        if(mousey>realtexttop+textheight){
-            buttontop=textheight;
-        }else{
-            buttontop=Math.floor((mousey-realtexttop)/100)*100
-            }
-        }
-    addbuttons.style.top=buttontop.toString()+"px";
-}})
 
 function reconSidebar(){
  //Floating sidebar

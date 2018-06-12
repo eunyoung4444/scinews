@@ -108,7 +108,32 @@
             }
         }
     });
-  
+    $('#addQbutton').tooltip({
+        placement: 'right',
+        title: 'Click if you have a question or want further information.',
+        animation: true,
+        delay: {show:200, hide:10}
+    })
+    $('#addQbutton').popover({
+        html:true,
+        content:'<div class="popoverrow">What is your question? Or what do you want to know?</div><div class="popoverrow"><div id="newQ"><input type="text" id="newQinput" placeholder="Type in your question"style="width:75%;height:30px"><button class="btn" id="newQbutton" onclick="addnewQ()">Add</button></div></div>',
+        placement:'right',
+    }).on('shown.bs.popover', function(){
+        $('#newQinput').focus();        
+        document.getElementById("addbuttons").classList.add('fixedbutton') 
+        $('#addQbutton').tooltip('hide');
+        $('#addQbutton').tooltip('disable');
+        document.getElementById("newQinput").addEventListener("keyup",function(e){
+            e.preventDefault();
+            if(e.keyCode===13){
+                document.getElementById("newQbutton").click();
+            }
+        })
+        $('#addEbutton').popover('hide');        
+    }).on('hidden.bs.popover',function(){
+        document.getElementById("addbuttons").classList.remove('fixedbutton') 
+        $('#addQbutton').tooltip('toggleEnabled');
+    })
 
     // Click Exclamation button Highlight some important text and then click the exclamation button to generate some quizz
     $('#addEbutton').popover({
@@ -116,14 +141,21 @@
         content:'<div class "popoverrow" style="float:right"><button class="btn" id="popoverclose" onclick="popoverclose()" ><i class="fa fa-times" style="color:grey"></i></button></div><div class="popoverrow">Select one or more sentences with important/useful information.</div><div class="popoverrow"><button class="btn" id="SelectStage" type="button" style="float: right;" disabled="true"; onclick="AfterSelection()">Next</button></div>',
         placement:'right',
     }).on('shown.bs.popover', function(){
-        $('#Q_input').focus();
+        $('#addEbutton').tooltip('hide');
+        $('#addEbutton').tooltip('disable');
+        document.getElementById("addbuttons").classList.add('fixedbutton_q') 
+        console.log("hi") 
         var sentences=document.getElementsByTagName("sent");
         for (var i =0;i<sentences.length;i++){
             sentence=sentences[i];
             sentence.classList.add('selectable')
         }
-        document.getElementById("addbuttons").classList.add('fixedbutton')  
+        $('#addQbutton').popover('hide');        
+    }).on('hidden.bs.popover',function(){
+        document.getElementById("addbuttons").classList.remove('fixedbutton_q') 
+        $('#addEbutton').tooltip('toggleEnabled');
     })
+
     $('#addEbutton').tooltip({
         placement: 'right',
         title: 'Click to make a quiz question.',
@@ -168,7 +200,7 @@ function popoverclose(){
                 sentence.classList.remove('curselected');
             }
         }
-    document.getElementById("addbuttons").classList.remove('fixedbutton');    
+    document.getElementById("addbuttons").classList.remove('fixedbutton_q');    
 
 }
 
@@ -180,7 +212,7 @@ $(document).on('mousemove', function(e){
      texttop=document.getElementById('text').offsetTop;
     textheight=document.getElementById('text').offsetHeight;
     addbuttons=document.getElementById("addbuttons");
-    if(addbuttons.classList.contains('fixedbutton')){}
+    if(addbuttons.classList.contains('fixedbutton')||addbuttons.classList.contains('fixedbutton_q')){}
     else{
     buttontop=0;
     topmargin=document.getElementById("top-margin").offsetHeight;
@@ -225,6 +257,67 @@ function reconSidebar(){
    });
 } // end of sidebar reconstruction
 
+function addnewQ(possiblequestion){
+    possiblequestion=document.getElementById("newQinput").value;
+    if(possiblequestion.length>2){
+        var questholder=document.getElementById("questions_generated");
+        curlen=questholder.childNodes.length-1;
+        newQholder=document.createElement("div");
+        newQholder.className="card";
+        newQholder.style.width="100%";
+        newQ=document.createElement("div");
+        newQ.className="row qrow";
+        newQdelete=document.createElement("div");
+        newQdelete.setAttribute("class","col-1 deleteholder")
+        newQdeletebutton=document.createElement("button");
+        newQdeletebutton.setAttribute("class","btn deletebutton");
+        newQdeletebutton.innerHTML='<i class="fa fa-times-circle"></i>';
+
+        newQdeletebutton.addEventListener("click", function(){
+            var questholder=document.getElementById("questions_generated");
+            questholder.removeChild(this.parentElement.parentElement.parentElement);
+            document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length-1;   
+            showbutton=document.getElementById("showless");
+            if((questholder.childNodes.length<6)&&(questholder.childNodes.length>1)){
+                showbutton=document.getElementById("showless");
+                showbutton.value="show all"
+                ShowLess();    
+                $("#showless")[0].style.display="none";             
+                }
+            else{
+                if(showbutton.value=="show all");
+                showbutton.value="show less"
+                ShowLess();                
+            }        
+        });
+
+        newQdelete.appendChild(newQdeletebutton);
+        
+        newQtext=document.createElement("div");
+        newQtext.setAttribute("class","qlist col-11");
+        newQtext.innerHTML=possiblequestion;
+    
+        newQ.appendChild(newQtext);
+        newQ.appendChild(newQdelete);
+        newQholder.appendChild(newQ);
+        questholder.appendChild(newQholder);
+        document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length;
+        if(questholder.childNodes.length>5){
+            $("#showless")[0].style.display="inline"; 
+            showbutton=document.getElementById("showless");
+            if(showbutton.innerHTML=="show all"){
+                showbutton.innerHTML="show less";
+                ShowLess();          
+            }
+        }
+
+        $('#addQbutton').popover('hide');
+    }
+    else{
+        document.getElementById("newQinput").value='';
+    };
+};
+
 
 function AfterSelection(){
     console.log("Hiiii");
@@ -260,7 +353,7 @@ function AfterSelection(){
 function SubmitQWithA(){
     possiblequestion=document.getElementById("possibleQ").value;
     if(possiblequestion.length>2){
-        var questholder=document.getElementById("generated_quiz");
+        var questholder=document.getElementById("quiz_generated");
         curlen=questholder.childNodes.length-1;
         newQholder=document.createElement("div");
         newQholder.className="card";
@@ -274,7 +367,7 @@ function SubmitQWithA(){
         newQdeletebutton.innerHTML='<i class="fa fa-times-circle"></i>';
 
         newQdeletebutton.addEventListener("click", function(){
-            var questholder=document.getElementById("generated_quiz");
+            var questholder=document.getElementById("quiz_generated");
             referredsents=this.parentElement.parentElement.parentElement.getAttribute("dataref");
             referredsentslist=referredsents.split(',');
             for(var i=0;i<referredsentslist.length;i++){
@@ -288,14 +381,8 @@ function SubmitQWithA(){
                 }
             }
             questholder.removeChild(this.parentElement.parentElement.parentElement);
-            document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length;   
-            showbutton=document.getElementById("showless");
-            
-            if((questholder.childNodes.length<6)&&(questholder.childNodes.length>1)){
-                $("#submitQuizbutton")[0].disabled=true;
-                $("#submitQuizbutton")[0].style.backgroundColor="white";
-                $("#submitQuizbutton")[0].style.color="black";            
-                }
+            document.getElementById("qnumtotal_q").innerHTML=questholder.childNodes.length;   
+            showbutton=document.getElementById("showless_q");
         });
 
         newQdelete.appendChild(newQdeletebutton);
@@ -310,13 +397,7 @@ function SubmitQWithA(){
         newQholder.appendChild(newQ);
         questholder.appendChild(newQholder);
 
-        document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length;
-        if(questholder.childNodes.length>4){
-            $("#submitQuizbutton")[0].disabled=false;
-            $("#submitQuizbutton")[0].style.backgroundColor="#17a2b8";
-            $("#submitQuizbutton")[0].style.color="white";   
-        }
-
+        document.getElementById("qnumtotal_q").innerHTML=questholder.childNodes.length;
         selectedTexts=document.getElementsByClassName("curselected");
         refsentids=[];
         for (var i=0;i<selectedTexts.length;i++){
@@ -349,35 +430,73 @@ function SubmitQWithA(){
     };
 };
 
-function submitQuiz(){
-    var question_generated=document.getElementById("generated_quiz");
+function submitQs(){
+    var question_generated=document.getElementById("questions_generated");
     var question_holders=question_generated.getElementsByClassName("card");
     var articleno=Number(document.getElementById("ano").innerText);
     var madeby=document.getElementById('username').innerText;
     console.log(question_holders.length);
     for (var i=0;i<question_holders.length;i++){
         var aquestion=question_holders[i].firstChild.firstChild.innerText;   
-        var refsentids=question_holders[i].getAttribute('dataref');
-        console.log(refsentids);
-        $.when( $.ajax({
-            url: 'addquestionwithref',
+        $.ajax({
+            url: 'addquestion',
             method: 'POST',
-            data:{'text':aquestion, 'articleno':articleno, 'madeby':madeby, 'madeat':"quizcol", 'refsentids':refsentids}
-        })).done(console.log(refsentids));
+            data:{'text':aquestion, 'articleno':articleno, 'madeby':madeby, 'madeat':"qcol"}
+        });
     }
-        uid=Number(document.getElementById("submitQuizbutton").getAttribute("dataref"));
-        console.log(uid)
-        if(uid%2==1){ // then group A
-            if(articleno>3){                              // then 2nd task
-                window.location.replace('../../survey/2');
-            }else{
-                window.location.replace('../../survey/0');
-            }
-        }else{ // then group B
-            if(articleno>3){                              // then 2nd task
-                window.location.replace('../../survey/2');
-            }else{
-                window.location.replace('../../survey/1');
-            }
-        }; 
+    window.location.replace('../../survey/'+document.getElementById("ano").innerText) 
+}
+
+
+function ShowLess(){
+    showbutton=document.getElementById("showless");
+    curstatus=showbutton.innerText;
+    wholelist=document.getElementById("questions_generated");
+    wholeQs=wholelist.childNodes;
+    if(curstatus=="show all"){
+        for(var  i=0;i<wholeQs.length;i++) {
+            child=wholeQs[i]
+            child.style.display="flex";
+        }
+        lastadd.style.display="none";
+        showbutton.innerText="show less";
+    }
+    else{               
+        for(var i=0; i<wholeQs.length;i++) {
+            child=wholeQs[i];
+            child.style.display="none";
+        }
+        nQs=wholeQs.length;
+        lastNode=wholeQs[nQs-1]
+        lastNode.style.display="flex";
+        showbutton.innerText="show all";
+        lastadd=document.getElementById("lastlyadded");
+        lastadd.style.display="inline";
+    }
+}
+function ShowLess_q(){
+    showbutton=document.getElementById("showless_q");
+    curstatus=showbutton.innerText;
+    wholelist=document.getElementById("quiz_generated");
+    wholeQs=wholelist.childNodes;
+    if(curstatus=="show all"){
+        for(var  i=0;i<wholeQs.length;i++) {
+            child=wholeQs[i]
+            child.style.display="flex";
+        }
+        lastadd.style.display="none";
+        showbutton.innerText="show less";
+    }
+    else{               
+        for(var i=0; i<wholeQs.length;i++) {
+            child=wholeQs[i];
+            child.style.display="none";
+        }
+        nQs=wholeQs.length;
+        lastNode=wholeQs[nQs-1]
+        lastNode.style.display="flex";
+        showbutton.innerText="show all";
+        lastadd=document.getElementById("lastlyadded");
+        lastadd.style.display="inline";
+    }
 }

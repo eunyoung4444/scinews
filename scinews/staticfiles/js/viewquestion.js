@@ -37,8 +37,47 @@
     for (var i=0;i<sents.length;i++){
         thissent=sents[i];
         thissent.setAttribute("id","sent"+i.toString());
+        $("#sent"+i.toString()).on({
+            mouseenter: function(){
+            if(this.classList.contains('selectable')){
+                this.style.border="1px dashed rgb(151, 167, 189)";
+            }},
+            mouseleave: function(){
+                if(this.classList.contains('selectable')){
+                    this.style.border="";
+                 }
+            }
+        });
+        $("#sent"+i.toString()).click(function(){
+            if(this.classList.contains('curselected')){
+                this.classList.remove("curselected");
+                this.classList.add("selectable");
+            }else{
+                if(this.classList.contains('selectable')){
+                this.classList.replace("selectable","curselected");
+            }}
+            // Enable or Disable Next button
+            if(document.getElementsByClassName("curselected").length>0){
+                if($("#SelectStage").length>0){
+                    $("#SelectStage")[0].disabled=false;}
+                else{
+                    if($("#FindStage").length>0){
+                        $("#FindStage")[0].disabled=false;
+                    }
+                }
+            }else{
+                if($("#SelectStage").length>0){
+                    $("#SelectStage")[0].disabled=true;}
+                else{
+                    if($("#FindStage").length>0){
+                        $("#FindStage")[0].disabled=true;
+                    }
+                }
+            }
+        });
     }
     body.style.display="inline";
+ 
     // jQuery AJAX set up
     function getCookie(name) {
         var cookieValue = null;
@@ -67,19 +106,13 @@
             }
         }
     });
- 
+  
     //Text select text and add it as a reference.
     var sentences=document.getElementsByTagName("sent");
     for (var i =0;i<sentences.length;i++){
         sentence=sentences[i];
 //        sentence.addEventListener
     }
-    reconSidebar();
-    $("#newQinput").keyup(function(event) {
-        if (event.keyCode === 13) {
-            $("#newQbutton").click();
-        }
-    });
 /*     .onmouseup = function() {
         //// do something only if one add ref popover is open 
         if(document.getElementById("ref_input")){
@@ -93,8 +126,11 @@
         else{
             snapSelectToQuestion();
         }} */
-}); // End of document ready clause 
-// Prevent generation of duplicated questions
+        reconSidebar();
+
+        
+}); 
+
 
 function reconSidebar(){
  //Floating sidebar
@@ -122,106 +158,4 @@ function reconSidebar(){
         floatingDiv.style.width=parentwidth.toString()+"px";
         }
    });
-} // end of sidebar reconstruction 
-
-function submitQs(){
-    var question_generated=document.getElementById("questions_generated");
-    var question_holders=question_generated.getElementsByClassName("card");
-    var articleno=Number(document.getElementById("ano").innerText);
-    var madeby=document.getElementById('username').innerText;
-    console.log(question_holders.length);
-    for (var i=0;i<question_holders.length;i++){
-        var aquestion=question_holders[i].firstChild.firstChild.innerText;   
-        $.ajax({
-            url: 'addquestion',
-            method: 'POST',
-            data:{'text':aquestion, 'articleno':articleno, 'madeby':madeby, 'madeat':"qcol"}
-        });
-    }
-    var quizurl='../../quiz/'+ articleno.toString();
-    window.location.replace(quizurl);
-}
-
-
-function addnewQ(){
-    newQinputbox=document.getElementById("newQinput");
-    newQinput=newQinputbox.value;
-    if(newQinput.length>2){
-
-        newQdeletebutton.addEventListener("click", function(){
-            var questholder=document.getElementById("questions_generated");
-            questholder.removeChild(this.parentElement.parentElement.parentElement);
-            document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length-1;   
-            showbutton=document.getElementById("showless");
-            if((questholder.childNodes.length<6)&&(questholder.childNodes.length>1)){
-                $("#submitQbutton")[0].disabled=true;
-                $("#submitQbutton")[0].style.backgroundColor="white";
-                $("#submitQbutton")[0].style.color="black"; 
-                showbutton=document.getElementById("showless");
-                showbutton.value="show all"
-                ShowLess();    
-                $("#showless")[0].style.display="none";             
-                }
-            else{
-                if(showbutton.value=="show all");
-                showbutton.value="show less"
-                ShowLess();                
-            }        
-        });
-
-        newQdelete.appendChild(newQdeletebutton);
-
-    
-        newQtext=document.createElement("div");
-        newQtext.setAttribute("class","qlist col-11");
-        newQtext.innerHTML=newQinput
-//        newQtext.setAttribute("style","text-align: justify");
-    
-        newQ.appendChild(newQtext);
-        newQ.appendChild(newQdelete);
-        newQholder.appendChild(newQ);
-        questholder.appendChild(newQholder);
-
-        newQinputbox.value="";
-        document.getElementById("qnumtotal").innerHTML=questholder.childNodes.length-1;
-        if(questholder.childNodes.length>5){
-            console.log("HI?")
-            $("#submitQbutton")[0].disabled=false;
-            $("#submitQbutton")[0].style.backgroundColor="#17a2b8";
-            $("#submitQbutton")[0].style.color="white";   
-            $("#showless")[0].style.display="inline"; 
-            showbutton=document.getElementById("showless");
-            if(showbutton.innerHTML=="show all"){
-                showbutton.innerHTML="show less";
-                ShowLess();          
-            }
-        }
-        
-    }
-}
-
-function ShowLess(){
-    showbutton=document.getElementById("showless");
-    curstatus=showbutton.innerText;
-    wholelist=document.getElementById("questions_generated");
-    wholeQs=wholelist.childNodes;
-    if(curstatus=="show all"){
-        for(var  i=1;i<wholeQs.length;i++) {
-            child=wholeQs[i]
-            child.style.display="flex";
-        }
-        showbutton.innerText="show less";
-    }
-    else{               
-        for(var i=1; i<wholeQs.length;i++) {
-            child=wholeQs[i];
-            child.style.display="none";
-        }
-        nQs=wholeQs.length-1;
-        lastNode=wholeQs[nQs]
-        lastlastNode=wholeQs[nQs-1]
-        lastNode.style.display="flex";
-        lastlastNode.style.display="flex";
-        showbutton.innerText="show all";
-    }
-}
+} // end of sidebar reconstruction
